@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Getting Started with Mia</title>
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home </a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<span class = "page"> Getting Started with Mia</span> |
+			<a href="developersupport.html" class = "page"> Developer Support</a>
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h1>Getting Started with Mia</h1>
+		<p>
+			Hello, and welcome to Mia! Mia is an easy to use annotation software for medical professionals. This introductory tutorial will guide you through the features of the Mia graphical app.
+
+			When you open Mia, you'll see a blank canvas, and a control panel on the right. Every feature of Mia is listed explicitly on the control panel if you'd like to get started immediately, and there are undo/redo buttons if you make any mistakes. For more details, read on.<br><br>
+
+			<span class = "bolden">Image Loading/Saving:</span> To load an image in MIA, use the Image I/O panel on the right side of the control panel. The window under Image I/O shows the contents of the current directory. When you first open Mia, it will begin in the directory the program is contained in. You can double click a folder in the list to move into it, or double click the "../" to move up one level. 
+			Double click a .png or .jpg image to select it, then click "Load Canvas" to put it on the canvas.
+			The Image I/O window will show all files in the folder, but only .png, .jpg, and .jpeg files are supported.
+			If you'd like to save an image, enter the name you'd like to save it under in the "Image:" textbox, including the .png or .jpg file extension, and click "Save Canvas." If you have a series of images in the format image_name###.jpg or image_name###.png, clicking "Previous Image" or "Next Image" will move to the next image in the sequence numerically.<br><br>
+			<div class = "images">
+				<img class = "positioningOneMia" src = "mia.png" alt = "Mia Image">
+				<img class = "positioningOneMia" src = "miacontrols.png" alt = "Mia Image">
+			</div>
+			<br>
+			<span class = "bolden">Annotation:</span> Once an image is loaded into Mia, you can annotate it. There's a red Pen tool, as well as a crosshairs stamp. Use these tools by selecting them in the radial menu, and clicking to apply them to the canvas. Dragging while holding down the mouse will allow you to draw continuous lines with the pen.<br><br>
+			<div class = "images">
+				<figure>
+					<figcaption class = "bolden">CrossHair Tool</figcaption>
+					<img class = "positioningTwoMia" src = "annotate1.png" alt = "arrow image">
+					<figcaption class = "bolden">Pen Tool</figcaption>
+					<img class = "positioningTwoMia" src = "annotate2.png" alt = "pen image">
+				</figure>
+			</div>
+			<br>
+			<span class = "bolden">Filters:</span> Graphical Mia supports a few different filters to manipulate loaded images. "Sharpen," "Edge Detect," "Grayscale," and "Multiply RGB," all do what they sound like. Threshold changes each rgb value to either 0 or 1, depending on whether or not the rgb value is greater or less than the threshold value provided.
+			Quantize reduces the possible colors in the image by requiring each red, green, and blue component to be one of X values, where X is the number of bins specified. Fewer bins means fewer color values.<br><br>
+			<div class = "images">
+				<figure>
+					<figcaption class = "bolden">Sharpened Image</figcaption>
+					<img class = "positioningTwoMia" src = "sharpenmia.png" alt = "sharpen image">
+					<figcaption class = "bolden">Edge Detected Image</figcaption>
+					<img class = "positioningTwoMia" src = "edgedetectmia.png" alt = "detect edge image">
+					<figcaption class = "bolden">Multrgb image</figcaption>
+					<img class = "positioningTwoMia" src = "multiplyrgb.png" alt = "multrgb image">
+				</figure>
+			</div>
+			<br>
+			<span class = "bolden">Undo/Redo:</span> If you'd like to reverse your previous action, you can use Undo/Redo to move along your action history. However, if you undo, then make a new change, you'll won't be able to redo any of the changes you undid.<br><br>
+		</p>
+
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2016, CSCI 3081 TeamBitMap</span>
+	</div>
+
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Programmer's Blog - Stryker </title> 
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home</a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<a href = "developersupport.html"> Developer Support </a> |
+			<a href = "designandstyle.html"> Design and Coding Style Guide </a>|
+			<a href = "blog.html"> Programmer's Blog </a>|
+			<span class = "page"> Stryker's Blog</span> 
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h2>Programmer's Blog - Stryker Thompson</h2>
+		<p><b>Purpose: </b>this code snippet illustrates one of our test cases for determining the correctness of the Tools in libphoto. This snippet tests the Blur Tool and compares it to a ‘correct’ result from iteration two.
+		</p>
+
+		<code class = "code">
+		<br> //make a new blur tool and buffer to modify
+		<br>Tool * blur_tool = new BlurTool();
+		<br>PixelBuffer * test_buffer = new PixelBuffer(800, 800, ColorData(1,1,0.95));
+		<br>//load the picture to be blurred into the buffer
+		<br>ImageFileHandler::loadImageIntoBuffer("blur_tool_before_test.png", test_buffer);
+		<br>//blur specific parts of the buffer
+		<br>blur_tool->apply(100,200,test_buffer);
+		<br>blur_tool->apply(300,300,test_buffer);
+		<br>blur_tool->apply(100,299,test_buffer);
+		<br>blur_tool->apply(180,270,test_buffer);
+		<br>blur_tool->apply(130,260,test_buffer);
+		<br>blur_tool->apply(345,400,test_buffer);
+		<br>blur_tool->apply(400,400,test_buffer);
+		<br>for(int i = 100; i < 400; i++)
+		<br>{
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blur_tool->apply(i,i,test_buffer);
+		<br>}
+		<br>for(int i = 50; i < 300; i++)
+		<br>{
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blur_tool->apply(i,100,test_buffer);
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blur_tool->apply(100,i,test_buffer);
+		<br>}
+		<br>//import the 'correct' buffer and image from iteration 2
+		<br>PixelBuffer * ground_buffer = new PixelBuffer(800, 800, ColorData(1,1,0.95));
+		<br>ImageFileHandler::loadImageIntoBuffer("blur_tool_test.png", ground_buffer);
+		<br>//see if they're the same
+		<br>TSM_ASSERT("Failed blur tool test", test_buffer->isEqualTo(ground_buffer));
+		</code>
+
+		<p><b>How it works: </b>this code is relatively straightforward, however it illustrates several characteristics of of our program design and style. These can be seen as we walk through the code.
+		</p>
+
+		<p>First, I create a pointer to a new Blur Tool, called blur_tool. This is in-line with our naming conventions of using all lowercase letters and separating words with underscores. Next, I create a pointer to a new PixelBuffer called test_buffer, which I load an image into.</p>
+
+		<p>This illustrates the use of our image handling class, ImageFileHandler. It is a static class to use for loading and saving png and jpg images. In this case I am loading an image called “blur_tool_before_test.png” into the test_buffer with a call to ImageFileHandler::loadImageIntoBuffer. This image is of a cartoon bowl of fruit to be blurred.</p>
+
+		<p>I then call blur_tool’s apply function to many different parts of test_buffer. First, I do it on certain select locations, and then iterate over many parts in a line, which will test many repeated calls to apply the tool. Note that not every line is commented - just the ones which help to describe what I am trying to do with the code. This is because we want to let most of the code speak for itself, as to avoid over-commenting.</p>
+
+		<p>Lastly, it is time to compare the changes made to test_buffer to a buffer which has had the same modifications made to it in our code for iteration two, which was visually inspected and deemed as correct. In order to do this, I simply create a new buffer called ground_buffer (for ‘ground truth’) and load the saved image from iteration two into it. Then I use the TSM_ASSERT function from the cxxtest library to assert that if I compared the two buffers I am left with, using a function from PixelBuffer to compare them, it would return a value of true, confirming the (at least partial) correctness of the Blur Tool.</p>
+
+		<p>As is evident from the code, this snippet provides a good example of our variable naming strategies, code documentation practices, brevity and use of not only our own library functions and classes but also the third party tool, cxxtest.</p>				
+				
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2015, CSCI 3081 TeamBitMap</span> 
+	</div>
+
+
+</body>
+</html>

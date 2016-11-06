@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Adding A New filter to flashphoto </title> 
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home</a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<a href = "developersupport.html"> Developer Support </a> |
+			<a href = "designandstyle.html"> Design and Coding Style Guide </a>|
+			<span class = "page"> Adding a new filter to flashphoto </span> 
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h1>Adding A New filter to FlashPhoto</h1>
+		<p>The following is a step by step process for modifying libphoto and FlashPhoto to add a new filter. In these instructions, &lt;Filter&gt; will be a stand in for the name of the filter you are adding.</p>
+
+		<p>First, we need to change our libphoto files to implement the new filter. Open the src/ folder in the libphoto/ directory. This folder contains the source code for the libphoto library, and is where you will put the bulk of your changes. The changes you'll need to make will be slightly different based on whether or not you're adding a convolution filter or not.</p>
+
+		<p><span class = "bolden">Convolution Filter:</span>
+			<br><span class = "tab">-Enums.h:</span>
+			<br><span class = "tabs">-Add <code class = "code">FILTER_&lt;Filter&gt;</code> to the <code class = "code">filter_enum</code> enumerated type. Add any parameters your filter users to the <code class = "code">filter_parameters</code> struct.</span>
+			<br><span class = "tab"><b>-MaskFactory.cpp, MaskFactory.h:</b></span>
+			<br><span class = "tabs">-Add a private static mask function called <code class = "code">get&lt;Filter&gt;Kernel()</code> that creates and returns a mask with the kernel values appropriate to the filter you'd like to create. If the kernel will be variable depending on some parameters, you can pass those into the function. You can use the other <code class = "code">getMask()</code> functions in the file as a reference.</span>
+			<br><span class = "tabs">-Add <code class = "code">get&lt;Filter&gt;Kernel()</code> to the .h file.</span>
+			<br><span class = "tabs">-Modify the switch statement in <code class = "code">MaskFactory::getKernel()</code> to call the <code class = "code">get&lt;Filter&gt;Kernel()</code> function you wrote.</span>
+			<br><span class = "tab"><b>-Filter.cpp, Filter.h:</b></span>
+			<br>	<span class = "tabs">-Write <code class = "code">apply&lt;Filter&gt;Filter(PixelBuffer*, filter_parameters)</code>. This function calls <code class = "code">MaskFactory::getKernel()</code> to retrieve the kernel, and passes it to the convolve function along with the PixelBuffer* to be modified. <code class = "code">FilterMethods::convolve()</code> takes care of the hard part.</span>
+			<br>	<span class = "tabs">-Add the function you just wrote to Filter.h as a static public function.</span></p>
+
+		<p><span class = "bolden">Non-Convolution Filter:</span>
+			<br><span class = "tab">-Filter.cpp, Filter.h:</span>
+			<br>	<span class = "tabs">-Write your static public <code class = "code">apply&lt;filter&gt;Filter(PixelBuffer, [parameters])</code> in Filter.cpp. Add it to Filter.h.</span></p>
+
+		<p>After writing your filters you'll need to update the library file in libphoto. Navigate to the base libphoto directory and run "<code class = "code">make clean; make</code>"</p>
+
+		<p>Now you'll actually want to change FlashPhoto to allow the program to use the filter you just wrote. First, navigate to FlashPhoto/src/.<br>
+		<br><span class = "bolden">Modify FlashPhoto.cpp, FlashPhoto.h:</span>
+		<br>	<span class = "tab">-Change <code class = "code">FlashPhoto::initGlui()</code> to initialize the glui elements for the new filter. This should be similar to how the other filters are initialized, so shouldn't be too hard to figure out.</span>
+		<br>	<span class = "tab">-Add a <code class = "code">UI_APPLY_&lt;FILTER&gt;</code> value to the <code class = "code">UIControlType</code> in the .h file</span>
+		<br>	<span class = "tab">-In the "glui callbacks" section of the .cpp file, add a <code class = "code">FlashPhotoApp::applyFilter&lt;Filter&gt;()</code> function that takes no arguments, calls the appropriate filter function in Filter.cpp, and saves the pixelbuffer. Again, this should be very similar to the other filter functions present already. Don't forget to add it to the .h file as well.</span>
+		<br>	<span class = "tab">-In <code class = "code">FlashPhotoApp::gluiControl()</code>, add a case to the switch statement for <code class = "code">UI_APPLY_&lt;FILTER&gt;</code> that calls the <code class = "code">applyFilter&lt;Filter&gt;()</code> function you just wrote.</span>
+		<br>Recompile FlashPhoto by going to the main directory for it and running <code class = "code">make clean; make</code>. If you've done everything right, your new filter should show up in the menu, ready to use.</p>
+
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2015, CSCI 3081 TeamBitMap</span> 
+	</div>
+
+
+</body>
+</html>

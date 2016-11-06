@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Programmer's Blog -Thomas </title> 
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home</a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<a href = "developersupport.html"> Developer Support </a> |
+			<a href = "designandstyle.html"> Design and Coding Style Guide </a>|
+			<a href = "blog.html"> Programmer's Blog </a>|
+			<span class = "page"> Thomas' Blog</span> 
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h2>Programmer's Blog - Thomas Hvizdos</h2>
+		<p><b>Purpose: </b> This is half of the primary function for MIACommand, the class that handles Mia command line input in our implementation. It provides examples of good commenting, messages to the user, and error checking. </p>
+		<code class = "code">
+		<br>int MIACommand::runMIACommand(int argc, char*argv[]) 
+		<br>{
+		<br>&nbsp;//if the user provides no arguments, crash
+		<br>&nbsp;if(argc <= 1)
+		<br>&nbsp;{
+		<br>&nbsp;&nbsp;std::cout << "Invalid usage. Type 'mia -h' for help" << std::endl;
+		<br>&nbsp;&nbsp;return 1;
+		<br>&nbsp;}
+		<br>
+		<br>&nbsp;//print help and quit if user wanted help
+		<br>&nbsp;if((string)argv[1] == "-h")
+		<br>&nbsp;{
+		<br>&nbsp;&nbsp;std::cout << std::setw(40);
+		<br>&nbsp;&nbsp;std::cout << mia_help_message << std::endl;
+		<br>&nbsp;&nbsp;return 0;
+		<br>&nbsp;}
+		<br>&nbsp;&nbsp;
+		<br>&nbsp;//get all of the commands that aren't the input/output files/dirs
+		<br>&nbsp;std::vector<std::string> command_list;
+		<br>&nbsp;int i = 2;
+		<br>&nbsp;while(i < argc-1)
+		<br>&nbsp;{
+		<br>&nbsp;&nbsp;command_list.push_back(argv[i]);
+		<br>&nbsp;&nbsp;i++;
+		<br>&nbsp;}
+		<br>
+		<br>&nbsp;//if its a valid file name, process commands
+		<br>&nbsp;if(isValidFileName(argv[1]))
+		<br>&nbsp;{
+		<br>&nbsp;&nbsp;int status = commandLineExecutor(argv[1],command_list, argv[argc-1]);
+		<br>&nbsp;&nbsp;return status;
+		<br>&nbsp;}
+		<br>
+
+		<br>&nbsp;else //directory stuff
+		<br>&nbsp;{
+		<br>&nbsp;&nbsp;DIR* input_directory = opendir(argv[1]);
+		<br>&nbsp;&nbsp;DIR* output_directory = opendir(argv[argc-1]);
+		<br>&nbsp;&nbsp;if(input_directory == NULL) //couldn't open dir.
+		<br>&nbsp;&nbsp;{
+		<br>&nbsp;&nbsp;&nbsp;cout << "couldn't open " << argv[1] << ". Type 'mia -h' for help." << std::endl;
+		<br>&nbsp;&nbsp;&nbsp;return 1;
+		<br>&nbsp;&nbsp;}
+		<br>&nbsp;&nbsp;if(output_directory == NULL)
+		<br>&nbsp;&nbsp;{
+		<br>&nbsp;&nbsp;&nbsp;cout << "creating directory " << argv[argc-1] << std::endl;
+		<br>&nbsp;&nbsp;&nbsp;if(mkdir(argv[argc-1], 0700))
+		<br>&nbsp;&nbsp;&nbsp;{
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;cout << "failed to create directory. Exiting. " << std::endl;
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;return 1;
+		<br>&nbsp;&nbsp;&nbsp;} 
+		<br>&nbsp;&nbsp;}
+		<br>&nbsp;//rest of directory stuff omitted to save space.
+		<br>}
+		</code>
+
+		<p><b>How it works: </b>This code is half of the major function for MIACommand, the portion of MIA that allows users to manipulate images from the command line.This code is what does most of the systems programming required for the command line program to work, and calls the commandLineExecutor() function to actually apply the filters to the various images it finds. It begins by checking the two simplest use cases: if the user gives MIA no arguments, or if the user requests help. The first case should not occur, because main.cpp should launch the graphical window if the user provides no arguments, but it is provided for the sake of completeness. The second case simply prints a help message that has been defined in the header. We then put the arguments in argv[] into a vector to make them easier to work with.</p>
+
+		<p>We then move on to actually working with the inputs. If the user has provided a valid file name, it is given to the commandLineExecutor() function, which performs the filtering. If the file name is not valid, the program attempts to open a directory with that name, and iterates over the files, passing them to the commandLineExecutor. Since directories might contain other files other than images, we check if the file is an image before giving it to commandLineExecutor.</p>
+
+		<p>Informative Comments: In my opinion, systems programming code can be hard to read at a glance. To that end, I've attempted to split the code up into bite sized chunks that have a short comment summarizing what they do. A user trying to get a broad sense of what the code does will be able to skim over it without getting bogged down in OS details, and someone who needs to find a specific section of the code will be able to be quickly identify where it is.</p>
+
+		<p>Informative cout statements: If the program encounters an error, it will always print out a brief description of what happened, and direct the user to call Mia with the -h argument if appropriate. This helps make the program more user friendly, and aids in debugging. I additionally print out an message if the program creates a directory, because I think its a good idea to inform the user of any non-obvious changes the program is making to their system.
+		</p>
+
+		<p>Error Checking: The error checking in this function is robust. I attempted to include an error check anytime something could conceivably go wrong, even if it was very unlikely. This contributes to code stability. The error checking also returns different values depending on if the program ran successfully(0) or not(1). This was mostly done as a novelty to make myself happy, but it ended up being very useful when testing the command line tool--an indication that writing clean code pays off!</p>
+				
+				
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2015, CSCI 3081 TeamBitMap</span> 
+	</div>
+
+
+</body>
+</html>

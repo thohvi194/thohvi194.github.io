@@ -1,0 +1,143 @@
+
+
+body {
+	background: #809fff;
+	font-size: 1em;
+	font-family: sans-serif;
+}
+
+h1 {
+	text-align: center;
+	margin-top: 0em; /*To keep consistent spacing around the inside of the boxes*/
+}
+
+/* Something I learned from the internet for not letting
+	floating elements expand beyond the div*/
+.content:before,
+.content:after {
+    content:"";
+    display:table;
+}
+.content:after {
+    clear:both;
+}
+
+/* Formatting for content bubbles */
+.content, .footer {
+	margin: 0 auto;
+	margin-top: 2em;
+	width: 75%;
+	border-radius: 1em;
+	background: white;
+	padding: 2em;
+}
+
+.footer {
+	text-align: center;
+	margin-top: 2em;
+	padding: 1em;
+	margin-bottom: 2em;
+}
+
+/* floating picture for home page  */
+#example-pic {
+	float:right;
+	padding-left:2em;
+	padding-bottom:2em;
+	width: 10em;
+
+}
+
+/* All links that I want bolded */
+.link, nav *{
+	font-size: 1em;
+	font-weight: bold;
+	color: black;
+}
+
+.copyright {
+	font-style:italic;
+}
+
+.bolden {
+	font-weight:bold;
+	}
+
+.positioning {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 390px;
+    }
+
+.images {
+	text-align:center;
+	position: relative;
+	}
+
+.left {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	}
+
+.positionings {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    }
+
+.positioningOne {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    }
+
+.positioningOneMia {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 440px;
+    }
+
+.positioningTwoMia {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    }
+
+.text {
+	font-weight:bold;
+	position: absolute;
+    right: 10px;
+    top: 10px;
+    }
+
+.positioningsMia {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 150px;
+    }
+
+.code {
+	color:blue;
+	font-style:italic;
+	font-size:14px;
+	}
+
+.positioningsMias {
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 120px;
+    }
+    
+.tab { display:inline-block; 
+       margin-left: 40px; } 
+
+.tabs { display:inline-block; 
+       margin-left: 80px; } 

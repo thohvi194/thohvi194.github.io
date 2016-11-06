@@ -1,0 +1,76 @@
+*main header, bigger than the others* Adding A New Brush to FlashPhoto
+
+To add a new brush to FlashPhotoApp involves creating a new Tool with a Mask, and integrating it into the FlashPhotoApp.cpp file.
+
+*header/section* Making the tool:
+
+First, you must create a class which inherits the abstract class Tool. It is relatively simple. Include the following dependencies:
+
+MaskFactory.h and <cmath>
+
+And write a constructor and destructor for the class. In the constructor, set the inherited Mask called m_mask to be whichever mask you want from MaskFactory by calling MaskFactory::getMask(mask_enum mask_to_make) where mask_to_make is the enum value corresponding to the Mask you would like (PEN, ERASER etc.). If there is no existing Mask to use for the new Tool, follow the instructions for adding a new Mask below.
+
+You may wish to override the apply() function inherited from  Tool. By default it will iterate over the Mask (which is a 2D-array) and change the relevant locations on a PixelBuffer by taking into account its current color and mask shape. Some Tools work slightly different, for example the StampTool actually uses a PixelBuffer instead of a mask because it is storing an actual image.
+
+Don’t forget to add this new header to the include.h file within libphoto.
+
+*header/section* Adding a New Mask:
+
+To add a new Mask for a Tool to use, you will need to make some modifications to MaskFactory. Before doing so, add a new MASK_NAME (ie. STAMP) to the mask_enum enumerated type in Enums.h. This will make it so other functions can figure out which Mask is relevant.
+
+In MaskFactory.cpp, write a new function called MaskFactory::getNewNameMask() which returns the relevant 2D-array you would like to use for your Tool’s Mask. Don’t forget to add this function to the header file, MaskFactory.h, and to specify that it is static. Lastly, add a case to the switch statement in MaskFactory::getMask() to call the new function you just made to return the correct mask.
+
+*header/section* Tying it all together within FlashPhoto:
+
+Now we need to add the Tool to FlashPhotoApp. First, we will update the header file. In FlashPhotoApp.h, find the line:
+const int TOOL_NUM = <some_number>;
+And increment it by 1.
+
+Then, find the ToolEnum, and add a type for your new Tool, like so:
+
+    enum ToolEnum
+    {
+      PEN,
+      ERASER,
+      SPRAY,
+      CALLIG,
+      HIGHLIGHT,
+      STAMP,
+      BLUR,
+      NEWTYPE;
+    };
+
+Now the rest of the work happens in FlashPhotoApp.cpp. In the fillToolArray() function, set the value of toolsArray at your new type in the enum to a new version of your Tool:
+
+void FlashPhotoApp::fillToolArray()
+{
+	toolsArray[PEN] = new PenTool();
+	toolsArray[ERASER] = new EraserTool();
+	toolsArray[SPRAY] = new SprayCanTool();
+	toolsArray[CALLIG] = new CalligraphyPenTool();
+	toolsArray[HIGHLIGHT] = new HighlighterTool();
+	toolsArray[STAMP] = new StampTool();
+	toolsArray[BLUR] = new BlurTool();
+	toolsArray[NEWTYPE] = new NewTool();
+}
+
+Next, you’ll need to add a new button for the Tool so create a new BLUI_RadioButton and pass it (radio, “Tool Name”) in the initGlui() function:
+
+    GLUI_Panel *toolPanel = new GLUI_Panel(m_glui, "Tool Type");
+    {
+        GLUI_RadioGroup *radio = new GLUI_RadioGroup(toolPanel, &m_curTool, UI_TOOLTYPE, s_gluicallback);
+        // Create interface buttons for different tools:
+        new GLUI_RadioButton(radio, "Pen");
+        new GLUI_RadioButton(radio, "Eraser");
+        new GLUI_RadioButton(radio, "Spray Can");
+        new GLUI_RadioButton(radio, "Caligraphy Pen");
+        new GLUI_RadioButton(radio, "Highlighter");
+        new GLUI_RadioButton(radio, "Stamp");
+        new GLUI_RadioButton(radio, "Blur");
+        new GLUI_RadioButton(radio, “Tool Name”);
+    }
+
+Lastly, if the Tool for some reason does not keep track of a color (this would mean you made some other modifications to it) such as the Blur or Stamp tools, then add a check in updateToolColors() to make sure the function does not try to set the color of the Tool. This is done by adding another expression in the check to see if i is the new type in the enum you made, such as:
+if (i != ERASER && i != BLUR && i != STAMP && i != NEWTYPE) 
+
+You’re done!

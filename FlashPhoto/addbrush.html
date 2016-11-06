@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Adding A New Brush to FlashPhoto </title> 
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home</a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<a href = "developersupport.html"> Developer Support </a> |
+			<a href = "designandstyle.html"> Design and Coding Style Guide </a>|
+			<span class = "page"> Adding a new brush to flashphoto </span> 
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h1>Adding A New Brush to FlashPhoto</h1>
+		<p>
+				To add a new brush to FlashPhotoApp involves creating a new Tool with a Mask, and integrating it into the FlashPhotoApp.cpp file.<br>
+
+				<h3>Making the tool:</h3>
+
+				First, you must create a class which inherits the abstract class Tool. It is relatively simple. Include the following dependencies:<br><br>
+
+				<code class = "code">MaskFactory.h and &lt;cmath&gt;</code><br><br>
+
+				And write a constructor and destructor for the class. In the constructor, set the inherited Mask called <code class = "code">m_mask</code> to be whichever mask you want from MaskFactory by calling <code class = "code">MaskFactory::getMask(mask_enum mask_to_make)</code> 
+				where <code class = "code">mask_to_make</code> is the enum value corresponding to the Mask you would like (<code class = "code">PEN, ERASER</code> etc.). If there is no existing Mask to use for the new Tool, follow the instructions for adding a new Mask below.<br><br>
+
+				You may wish to override the <code class = "code">apply()</code> function inherited from  <code class = "code">Tool</code>. By default it will iterate over the Mask (which is a 2D-array) and change the relevant locations on a PixelBuffer by taking into account its current color and mask shape. 
+				Some Tools work slightly different, for example the <code class = "code">StampTool</code> actually uses a PixelBuffer instead of a mask because it is storing an actual image.<br><br>
+
+				Don’t forget to add this new header to the <code class = "code">include.h</code> file within <code class = "code">libphoto</code>.<br>
+
+				<h3>Adding a New Mask:</h3>
+
+				To add a new Mask for a Tool to use, you will need to make some modifications to <code class = "code">MaskFactory</code>. Before doing so, add a new <code class = "code">MASK_NAME</code> (ie. <code class = "code">STAMP</code>) to the <code class = "code">mask_enum</code> enumerated type in Enums.h. 
+				This will make it so other functions can figure out which Mask is relevant.<br><br>
+
+				In <code class = "code">MaskFactory.cpp</code>, write a new function called <code class = "code">MaskFactory::getNewNameMask()</code> which returns the relevant 2D-array you would like to use for your Tool’s Mask. Don’t forget to add this function to the header file, <code class = "code">MaskFactory.h</code>, 
+				and to specify that it is <code class = "code">static</code>. Lastly, add a case to the switch statement in <code class = "code">MaskFactory::getMask()</code> to call the new function you just made to return the correct mask.<br><br>
+
+				<h3>Tying it all together within FlashPhoto:</h3>
+
+				Now we need to add the Tool to FlashPhotoApp. First, we will update the header file. In <code class = "code">FlashPhotoApp.h</code>, find the line:<br>
+				<code class = "code">const int TOOL_NUM = &lt;some_number&gt;</code><br>
+				And increment it by 1.<br><br>
+
+				Then, find the ToolEnum, and add a type for your new Tool, like so:<br><br>
+
+					<code class = "code">enum ToolEnum<br>
+										{<br>
+										  PEN,<br>
+										  ERASER,<br>
+										  SPRAY,<br>
+										  CALLIG,<br>
+										  HIGHLIGHT,<br>
+										  STAMP,<br>
+										  BLUR,<br>
+										  NEWTYPE;<br>
+										};</code>
+				<br><br>
+				Now the rest of the work happens in FlashPhotoApp.cpp. In the <code class = "code">fillToolArray()</code> function, set the value of <code class = "code">toolsArray</code> at your new type in the enum to a new version of your Tool:<br><br>
+			<code class = "code">
+				void FlashPhotoApp::fillToolArray()<br>
+				{<br>
+					toolsArray[PEN] = new PenTool();<br>
+					toolsArray[ERASER] = new EraserTool();<br>
+					toolsArray[SPRAY] = new SprayCanTool();<br>
+					toolsArray[CALLIG] = new CalligraphyPenTool();<br>
+					toolsArray[HIGHLIGHT] = new HighlighterTool();<br>
+					toolsArray[STAMP] = new StampTool();<br>
+					toolsArray[BLUR] = new BlurTool();<br>
+					toolsArray[NEWTYPE] = new NewTool();<br>
+				}<br>
+			</code>
+			<br>
+				Next, you’ll need to add a new button for the Tool so create a new <code class = "code">BLUI_RadioButton</code> and pass it (<code class = "code">radio, “Tool Name”</code>) in the <code class = "code">initGlui()</code> function:<br><br>
+				<code class = "code">
+					GLUI_Panel *toolPanel = new GLUI_Panel(m_glui, "Tool Type");<br>
+					{<br>
+						GLUI_RadioGroup *radio = new GLUI_RadioGroup(toolPanel, &amp;m_curTool, UI_TOOLTYPE, s_gluicallback);<br>
+						// Create interface buttons for different tools:<br>
+						new GLUI_RadioButton(radio, "Pen");<br>
+						new GLUI_RadioButton(radio, "Eraser");<br>
+						new GLUI_RadioButton(radio, "Spray Can");<br>
+						new GLUI_RadioButton(radio, "Caligraphy Pen");<br>
+						new GLUI_RadioButton(radio, "Highlighter");<br>
+						new GLUI_RadioButton(radio, "Stamp");<br>
+						new GLUI_RadioButton(radio, "Blur");<br>
+						new GLUI_RadioButton(radio, “Tool Name”);<br>
+					}<br>
+				</code>
+				<br>
+				Lastly, if the Tool for some reason does not keep track of a color (this would mean you made some other modifications to it) such as the Blur or Stamp tools, 
+				then add a check in <code class = "code">updateToolColors()</code> to make sure the function does not try to set the color of the Tool. This is done by adding another expression in the check to see if i is the new type in the enum you made, such as:<br>
+				<code class = "code">if (i != ERASER && i != BLUR && i != STAMP && i != NEWTYPE)</code> 
+
+				You’re done!
+
+		</p>
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2015, CSCI 3081 TeamBitMap</span> 
+	</div>
+
+
+</body>
+</html>

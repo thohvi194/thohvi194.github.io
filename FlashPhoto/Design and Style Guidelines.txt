@@ -1,0 +1,23 @@
+*main header, bigger than the others*  Coding Style and Documentation
+
+Our style and documentation for this project is relatively straightforward and is in line with most standards of C++ programming. More specifically, these are the common/important guidelines we abide by:
+
+Function names use camel case, such as myFunction().
+
+Variable names are lowercase and multi-word variables use underscores. For example, my_car. On occasion camel case is used (so my_car would be myCar) because it is consistent with a library we were working with, however if it is not necessary for consistency we recommend using the former naming strategy.
+
+If there are variables of the same type which are used in a similar manner across different functions, use the same or a similar name. For example, in functions which take in PixelBuffers and modify them, call the parameter which represents the PixelBuffer to be modified ‘buffer’ or ‘input_buffer’. While names like ‘in_buff’ or ‘buffer_to_modify’ still make sense, we prefer to be consistent in such names because it makes transitioning both mentally and in terms of moving code around much easier.
+
+Write brackets for functions on a separate line. For example:
+
+myFunction(args)
+{
+ … code …
+}
+
+In terms of commenting, use comments to describe the purpose of classes and functions. Within functions, use comments to describe what is happening if it isn’t evident simply by reading the code. This is to avoid over-commenting. If the comment isn’t necessary to making the code any more readable, then consider leaving it out. It could only then serve to clutter up the code.
+
+Comments describing classes and important functions should be formatted for Doxygen to pick them up, which would entail using two stars following a slash, such as:
+/** … comment... */
+
+Lastly, in terms of program design we attempt to adhere to the standards and practices taught in <i>Code Complete</i> by Steve McConnell. Some important aspects include keeping methods private unless it is necessary for the API to have them public, and to keep an eye on levels of abstraction and the interaction between classes to ensure they remain consistent.

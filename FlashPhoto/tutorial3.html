@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title> Converting and Segmenting a CT Scan Using Mia </title> 
+	<link class = "page" rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+
+
+	<div class="content">
+		<nav>
+			<a href="index.html" class = "page"> Home </a> |
+			<a href="usersupport.html" class = "page"> User Support </a> |
+			<span class = "page"> Converting and Segmenting a CT Scan Using Mia</span> |
+			<a href="developersupport.html" class = "page"> Developer Support</a>
+		</nav>
+	</div>
+
+	<div class = "content">
+		<h1>Converting and Segmenting a CT Scan Using Mia</h1>
+		<p>
+			This is a tutorial that will walk through the steps necessary to process a series of CT scans using the MIA command line interface. <br>
+			For this tutorial, we will assume that you are running Mia in a directory that has a folder called "brainstack/" that contains a series of CT scan images that are saved in the format mrbrain-8bit###.png, where ### are consecutive numbers from 001 to 099.<br><br>
+			<div class = "images"> 
+				<span class = "bolden"> Terminal with brainstack directory and format name
+					<img class = "positioningOneMia" src = "maiexample.png" alt = "Mia command line">&nbsp;
+				</span>
+			</div>	
+			<br>
+			The MIA command line interface is a powerful tool. Here, we're going to be able to use it to perform a number of changes to our brainstack with one command. For this case, we're going to blur the images slightly (to reduce noise), 
+			quantize the result into 4 bins, and save the images in a new directory. 
+			This will give us quantized versions of the images that represent 4 different tissue types.
+			<br>
+			<br> 
+			<div class = "images"> 
+				<span class = "bolden"> Running of Mia command in command line/terminal
+					<img class = "positioningOneMia" src = "miacommandline.png" alt = "Mia command line">&nbsp;
+				</span>
+			</div>	
+			<br>
+			Navigate to the terminal where Mia is located, and type "./Mia brainstack -blur 5 -quantize 4 brainstack_out", then press enter. The MIA app will create the directory brainstack_out, 
+			apply the changes to the images, and store them there. The image processing algorithms are somewhat complex, so it will take a few moments. When the program is finished, you can open brainstack_out to inspect the results.
+			<br>
+			<br> 
+			<div class = "images"> 
+				<span class = "bolden"> BrainStack_Out directory
+					<img class = "positioningOneMia" src = "brainstackout.png" alt = "Brain stack out directory image">&nbsp;
+				</span>
+			</div>	
+			<br>
+			<div class = "images"> 
+					<figcaption class = "bolden">Graphical output of image</figcaption>
+					<img class = "positioningsMia" src = "miachange1.png" alt = "Brain stack out directory image">
+					<img class = "positioningsMia" src = "miachange2.png" alt = "Brain stack out directory image">
+					<img class = "positioningsMia" src = "miachange3.png" alt = "Brain stack out directory image">
+					<img class = "positioningsMia" src = "miachange4.png" alt = "Brain stack out directory image">
+			</div>	
+			<br>
+			For a more detailed rundown of the individual processing commands MIA supports, you can type "./Mia -h" in the terminal.
+			<div class = "images"> 
+					<figcaption class = "bolden">Mia Commandline Help</figcaption>
+					<img class = "positioningOneMia" src = "miahelp.png" alt = "Mia help image">
+			</div>	
+			<br>
+		</p>
+		
+	</div>
+
+	<div class = "footer">
+		<!-- You can change the copyright! -->
+		<span class="copyright">&copy; 2016, CSCI 3081 TeamBitMap</span> 
+	</div>
+
+
+</body>
+</html>

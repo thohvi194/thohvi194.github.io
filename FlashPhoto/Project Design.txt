@@ -1,0 +1,31 @@
+The design of this project is segmented into three parts, which are split into directories: libphoto, FlashPhoto, and Mia. Mia and FlashPhoto are two applications which are built using a graphics library (glui), two image file compression/decompression libraries (for png and jpg types), and libphoto, which is a library we made for representing and operating on canvases for images.
+
+FlashPhoto and Mia operate nearly identically, each just uses different features. This design overview may be more specific to FlashPhoto, however all of the concepts translate nearly 1:1 to Mia. Also note that UML is used to illustrate segments of the project. Each piece of UML is only a partially-complete diagram, it is the portion of the entire design to highlight whatever part of the project is being discussed.
+
+FlashPhoto and Mia each have a file to represent the main application. The application (ie. FlashPhotoApp or MiaApp) displays a graphical interface using glui, by inheriting BaseGfxApp, a generic graphics interface. For more information as to how the interface is implemented, please consult the documentation for glui. FlashPhotoApp and MiaApp set up panels and buttons to represent which Tools and Filters the user would like to use.
+
+[flashphoto_inheritance_uml]
+
+The primary functions of FlashPhoto and Mia can be divided into four categories: the canvas, Tools, Filters, and image saving/loading.
+
+The canvas is represented internally as a PixelBuffer, which is an array of ColorData pointers. Each ColorData represents one pixel on the screen, so an 800x800px canvas would be a PixelBuffer with 16,000 ColorDatas. One ColorData has values for red, green, blue and alpha components to blend into a color. So FlashPhotoApp and MiaApp each have a PixelBuffer called m_displayBuffer. When the programs display themselves in the graphical interface, m_displayBuffer is interpreted into a canvas. Operations with Tools, Filters, and loading/saving images all will modify m_displayBuffer.
+
+[canvas_uml]
+
+Tools are represented as their own class, and FlashPhotoApp and MiaApp each have an array of the Tools they need. When a different Tool is selected, and the user clicks on the canvas (calling a relevant glui function such as leftMouseUp(int x, int y)), it will be applied to that location on canvas using the Tool’s apply method, which will take the current PixelBuffer (m_displayBuffer) and location, and modify the ColorData in the buffer. Each Tool has its own color (represented as a ColorData), usually set by FlashPhoto/MiaApp.
+
+Each Tool uses a Mask to modify the PixelBuffer. A Mask is a 2D-array of floats which represent essentially the ‘tip’ of a brush an artist would be using to paint. Each float represents the intensity/influence of the tool at that point. So a pen tool has a circular Mask with floats all of a value of 1.0 (it would make the relevant ColorData in the buffer the Tool’s color), and a highlighter tool has a rectangular Mask with floats all of a value of 0.6, which would mean it blends the Tool’s color with the buffer.  This is all done through the apply function, which will iterate of the area of the PixelBuffer the Mask would be on if it were laid onto it at the location passed along in the apply function. Masks are generated using a MaskFactory, which uses the Factory design pattern.
+
+[tool_uml]
+
+Filters are relatively simple. There is a static class called Filter which contains methods to apply filters to the canvas. Each method simply takes a PixelBuffer and any parameters necessary to specify its behavior, and returns a new buffer according to the expected behavior of a Filter.
+
+Filters work in one of two ways: some of them simply iterate over each ColorData in the PixelBuffer and modify them individually according to whatever the Filter would like to do. Others are convolution Filters, which decide what to display in a ColorData based on the ones which surround it. They use kernels, which are 2D-arrays of numbers to represent the influence of the ColorData around them. See more about kernels here[LINK TO https://en.wikipedia.org/wiki/Kernel_(image_processing)].
+
+[filter_uml]
+
+Lastly, image saving/loading is a matter of using a static class called ImageFileHandler. To load a file into the canvas, simply call loadImageIntoBuffer(std::string const & filename, PixelBuffer *& buffer) which will redirect the PixelBuffer’s pointer to a new PixelBuffer with the image corresponding the filename loaded into it. In the case of FlashPhotoApp and MiaApp, m_displayBuffer would be the buffer passed. To save a canvas to a file, call saveImage(const PixelBuffer* buffer, std::string const & filename) and give it the PixelBuffer (usually m_displayBuffer) and a name to be saved as. These actions support png and jpg filetypes and use the relevant libpng and libjpeg libraries.
+
+[image_file_handler_uml]
+
+One other feature in the applications is the undo/redo functionality. These simply use a BufferHistoryHandler to save PixelBuffers, and push and pop them to and from stacks when an undo or redo command is called.
